@@ -129,3 +129,25 @@ kube-node-lease   Active   # node heartbeats
 
 When you apply a manifest without specifying a namespace, it goes into `default`. You can add a `-n <namespace>` flag to any kubectl command to target a specific namespace, or set a `namespace:` field in your manifest's `metadata`.
 
+---
+
+## Helm
+
+Helm is the package manager for Kubernetes - it lets you install complex applications (like Prometheus, Longhorn, etc.) with a single command. If you installed it during prerequisites:
+
+```bash
+helm version
+```
+
+Add the common repos you'll need throughout this guide:
+
+```bash
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+```
+
+---
+
+You're set up. Time to deploy your first application.
+
+[Deploy Hello World :material-arrow-right:](../first-steps/first-deployment.md){ .md-button .md-button--primary }
