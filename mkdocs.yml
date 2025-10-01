@@ -61,6 +61,7 @@ nav:
     - Initial Setup: getting-started/initial-setup.md
   - First Steps:
     - Hello World: first-steps/first-deployment.md
+    - Expose with Ingress: first-steps/expose-ingress.md
   - Networking:
     - Traefik Ingress: networking/traefik.md
     - HTTPS & Let's Encrypt: networking/https-letsencrypt.md
