@@ -2,6 +2,8 @@
 
 A hands-on guide to running your own Kubernetes cluster — without the enterprise complexity.
 
+Live site: **[persunde.github.io/easyk3s](https://persunde.github.io/easyk3s)**
+
 ---
 
 ## What is this?
