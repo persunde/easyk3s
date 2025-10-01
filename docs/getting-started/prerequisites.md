@@ -89,13 +89,19 @@ You'll control the cluster from your local machine. Install these before startin
 
 === "kubectl"
     ```bash
-    # Linux
-    curl -LO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    # Linux (x86_64)
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+    # Linux (ARM64 — Raspberry Pi, ARM VPS)
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
     # macOS (Homebrew)
     brew install kubectl
     ```
+
+    See the [official kubectl install guide](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) for full and up to date details.
 
 === "Helm"
     ```bash
