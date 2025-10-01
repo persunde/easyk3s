@@ -95,9 +95,6 @@ You'll control the cluster from your local machine. Install these before startin
 
     # macOS (Homebrew)
     brew install kubectl
-
-    # Windows (winget)
-    winget install Kubernetes.kubectl
     ```
 
 === "Helm"
@@ -107,9 +104,6 @@ You'll control the cluster from your local machine. Install these before startin
 
     # macOS (Homebrew)
     brew install helm
-
-    # Windows (winget)
-    winget install Helm.Helm
     ```
 
 Verify both are installed:
