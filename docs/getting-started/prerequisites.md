@@ -22,7 +22,7 @@ K3S is intentionally lightweight. A basic single-node cluster runs fine on:
     - **[DigitalOcean](https://digitalocean.com)** - Simple UI, Droplets from $12/month
     - **[Vultr](https://vultr.com)** - Good global coverage, from $6/month
 
-    A Raspberry Pi 4 (4 GB RAM) also works - K3S runs on ARM.
+    A Raspberry Pi 4 (4 GB RAM) also works and K3S runs on ARM. In fact it is designed to be able to run on tiny edge computers like Raspberry Pi and similar.
 
 ## Operating system
 
