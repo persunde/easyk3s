@@ -175,7 +175,7 @@ kubectl apply -f traefik-config.yaml
 kubectl apply -f traefik-servicemonitor.yaml
 ```
 
-After a minute, Prometheus will start collecting Traefik metrics. In Grafana, import dashboard ID **17346** [(Traefik Official Standalone Dashboard)]((https://grafana.com/grafana/dashboards/17346-traefik-official-standalone-dashboard/)) from grafana.com.
+After a minute, Prometheus will start collecting Traefik metrics. In Grafana, import dashboard ID **17346** [(Traefik Official Standalone Dashboard)](https://grafana.com/grafana/dashboards/17346-traefik-official-standalone-dashboard/) from grafana.com.
 
 ---
 
