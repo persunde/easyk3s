@@ -4,6 +4,9 @@ By default, K3S uses `local-path-provisioner` for persistent volumes - data live
 
 [Longhorn](https://longhorn.io) is a distributed block storage system built for Kubernetes. It replicates data across nodes and survives node failures.
 
+!!! info "Alternative: Use an external object store"
+    Another option is to avoid in-cluster storage altogether and keep all state in an external object store like S3. This eliminates the replication problem, but your applications must use an object storage API rather than reading and writing files directly via the native filesystem API.
+
 ---
 
 ## Why Longhorn?
