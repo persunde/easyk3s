@@ -1,6 +1,6 @@
 # EasyK3S
 
-**A hands-on guide to running your own Kubernetes cluster - without the enterprise complexity.**
+**A hands-on guide to running your own Kubernetes cluster without the enterprise complexity.**
 
 ---
 
