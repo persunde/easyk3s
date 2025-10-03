@@ -1,6 +1,6 @@
 # Metrics with Prometheus and Grafana
 
-Know what your cluster is doing. This chapter installs the **kube-prometheus-stack** - a single Helm chart that bundles Prometheus, Grafana, Alertmanager, and a set of pre-built Kubernetes dashboards.
+Know what your cluster is doing. This chapter installs the **kube-prometheus-stack**. A single Helm chart that bundles Prometheus, Grafana, Alertmanager, and a set of useful pre-built dashboards for Kubernetes.
 
 ---
 
