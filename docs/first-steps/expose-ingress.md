@@ -1,6 +1,6 @@
 # Expose with Ingress
 
-In the previous step you reached the whoami app at `http://YOUR_SERVER_IP/hello`. That works, but it's not how real services are served — you want a proper hostname like `whoami.example.com` that routes to `/`.
+In the previous step you reached the whoami app at `http://YOUR_SERVER_IP/hello`. That works, but accessing a service using an IP address is not how real services are served. You want a proper hostname like `whoami.example.com` that routes to `/`.
 
 To do that, update the Ingress with a `host:` field. Traefik matches incoming requests by the `Host` header and routes them to the right Service.
 
@@ -73,7 +73,7 @@ X-Forwarded-Proto: http
 X-Real-Ip: 10.42.0.1
 ```
 
-Run it a few times — the `Hostname` alternates between your two pods as Traefik load-balances across them.
+Run it a few times and the `Hostname` will alternate between your two pods as Traefik load-balances across them.
 
 !!! tip "DNS not propagating?"
     If curl returns `curl: (6) Could not resolve host`, the DNS record hasn't propagated yet. Check with:
@@ -88,7 +88,7 @@ Run it a few times — the `Hostname` alternates between your two pods as Traefi
 
 With a `host:` field, Traefik only routes requests whose `Host` header matches exactly. Requests to the raw IP or a different hostname won't hit this rule.
 
-Without a `host:` field (like the previous step), Traefik routes any request matching the path — regardless of hostname or IP. That's useful for testing but not for production where you have multiple apps behind the same IP.
+Without a `host:` field (like the previous step), Traefik routes any request matching the path regardless of hostname or IP. That's useful for testing but not for production where you have multiple apps behind the same IP.
 
 ```
 Browser → http://whoami.YOUR_DOMAIN.com
