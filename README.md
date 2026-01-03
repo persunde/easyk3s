@@ -35,7 +35,7 @@ Then open [http://localhost:8000](http://localhost:8000).
 
 ## Contributing
 
-Contributions are welcome — typo fixes, clarifications, new examples, or additional sections.
+Contributions are welcome, typo fixes, clarifications, new examples, or additional sections.
 
 1. Fork the repo and create a branch
 2. Edit or add Markdown files under `docs/`
