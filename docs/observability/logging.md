@@ -1,6 +1,6 @@
 # Logging with Loki
 
-Metrics tell you what your cluster is doing - logs tell you *why*. This chapter adds **Loki** (log aggregation) and **Promtail** (log shipper) to your cluster and integrates them into the Grafana instance you already have.
+Metrics tell you what your cluster is doing - logs tell you *why*. This chapter adds **Loki** (log aggregation) and **Alloy** (log collector) to your cluster and integrates them into the Grafana instance you already have.
 
 ---
 
@@ -10,7 +10,7 @@ Metrics tell you what your cluster is doing - logs tell you *why*. This chapter 
 Every pod writes logs to stdout/stderr
          │
          ▼
-Promtail (DaemonSet)    ← runs on every node, tails container log files
+Alloy (DaemonSet)       ← runs on every node, streams container logs via the Kubernetes API
          │ ships logs to
          ▼
 Loki                    ← stores and indexes logs
@@ -23,18 +23,23 @@ Loki is designed to be **cheap and simple**. Unlike Elasticsearch, it doesn't in
 
 ---
 
-## Install Loki Stack
+## Install Loki
 
-We install Loki and Promtail but skip Grafana (you already have it from the metrics chapter):
+Add the Grafana Helm repo and install Loki in single-binary mode (no auth, local storage):
 
 ```bash
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
-helm install loki grafana/loki-stack \
+helm install loki grafana/loki \
   --namespace monitoring \
-  --set grafana.enabled=false \
-  --set prometheus.enabled=false
+  --set loki.auth_enabled=false \
+  --set loki.commonConfig.replication_factor=1 \
+  --set loki.storage.type=filesystem \
+  --set singleBinary.replicas=1 \
+  --set read.replicas=0 \
+  --set write.replicas=0 \
+  --set backend.replicas=0
 ```
 
 Watch the pods:
@@ -43,7 +48,81 @@ Watch the pods:
 kubectl get pods -n monitoring | grep loki
 ```
 
-You should see one `loki-0` pod (StatefulSet) and a `loki-promtail-xxxxx` pod on each node.
+You should see a `loki-0` pod reach `Running` status.
+
+---
+
+## Install Alloy
+
+Alloy is Grafana's log and metric collector, replacing the end-of-life Promtail. It runs as a DaemonSet and streams pod logs to Loki via the Kubernetes API.
+
+Create an Alloy values file with the log collection pipeline:
+
+```yaml
+# alloy-values.yaml
+alloy:
+  configMap:
+    content: |
+      // Discover all pods in the cluster
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      // Add useful labels from pod metadata
+      discovery.relabel "pod_logs" {
+        targets = discovery.kubernetes.pods.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_phase"]
+          regex         = "Pending|Succeeded|Failed|Completed"
+          action        = "drop"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+        }
+      }
+
+      // Stream logs from pods to Loki
+      loki.source.kubernetes "pod_logs" {
+        targets    = discovery.relabel.pod_logs.output
+        forward_to = [loki.write.default.receiver]
+      }
+
+      loki.write "default" {
+        endpoint {
+          url = "http://loki:3100/loki/api/v1/push"
+        }
+      }
+```
+
+Install:
+
+```bash
+helm install alloy grafana/alloy \
+  --namespace monitoring \
+  --values alloy-values.yaml
+```
+
+Watch the pods:
+
+```bash
+kubectl get pods -n monitoring | grep alloy
+```
+
+You should see an `alloy-xxxxx` pod on each node.
 
 ---
 
@@ -130,13 +209,18 @@ sum(rate({namespace="default"} |= "error" [1m])) by (pod)
 By default, Loki uses ephemeral storage and loses data on restart. For persistent storage:
 
 ```bash
-helm upgrade loki grafana/loki-stack \
+helm upgrade loki grafana/loki \
   --namespace monitoring \
-  --set grafana.enabled=false \
-  --set prometheus.enabled=false \
-  --set loki.persistence.enabled=true \
-  --set loki.persistence.storageClassName=longhorn \
-  --set loki.persistence.size=10Gi
+  --set loki.auth_enabled=false \
+  --set loki.commonConfig.replication_factor=1 \
+  --set loki.storage.type=filesystem \
+  --set singleBinary.replicas=1 \
+  --set read.replicas=0 \
+  --set write.replicas=0 \
+  --set backend.replicas=0 \
+  --set singleBinary.persistence.enabled=true \
+  --set singleBinary.persistence.storageClass=longhorn \
+  --set singleBinary.persistence.size=10Gi
 ```
 
 ---
@@ -146,9 +230,8 @@ helm upgrade loki grafana/loki-stack \
 Loki's default retention is unlimited - logs accumulate forever. Set a retention period to keep disk usage in check. Add to your Helm upgrade:
 
 ```bash
---set loki.config.chunk_store_config.max_look_back_period=720h \
---set loki.config.table_manager.retention_deletes_enabled=true \
---set loki.config.table_manager.retention_period=720h
+--set loki.limits_config.retention_period=720h \
+--set loki.compactor.retention_enabled=true
 ```
 
 720 hours = 30 days. Adjust to your needs.
@@ -160,7 +243,6 @@ Loki's default retention is unlimited - logs accumulate forever. Set a retention
 For high-traffic clusters, consider:
 
 - **Loki distributed mode** - scales Loki horizontally (requires object storage like S3)
-- **Grafana Alloy** - the next-generation log/metric collector replacing Promtail
 - **Log-based alerts** - Grafana can alert on LogQL queries the same way it alerts on Prometheus metrics
 
 ---
