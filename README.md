@@ -2,7 +2,7 @@
 
 A hands-on guide to running your own Kubernetes cluster without the enterprise complexity.
 
-Live site: **[easyk3s.dev/](https://easyk3s.dev/)**
+Live site: **[easyk3s.dev](https://easyk3s.dev/)**
 
 ---
 
