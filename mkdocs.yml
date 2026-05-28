@@ -1,6 +1,6 @@
 site_name: EasyK3S
 site_url: https://easyk3s.dev
-site_description: A hands-on guide to setting up your first K3S cluster - from a clean VM to a production-ready setup with HTTPS, monitoring, logging and storage.
+site_description: A hands-on guide to running your own Kubernetes cluster without the enterprise complexity.
 site_author: Per Sunde
 
 repo_name: easyk3s
