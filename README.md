@@ -33,6 +33,22 @@ mkdocs serve
 
 Then open [http://localhost:8000](http://localhost:8000).
 
+## Deploying
+
+The site is deployed to GitHub Pages from the `gh-pages` branch.
+
+**Build:**
+
+```bash
+mkdocs build
+```
+
+**Manual deploy:**
+
+```bash
+mkdocs gh-deploy
+```
+
 ## Contributing
 
 Contributions are welcome, typo fixes, clarifications, new examples, or additional sections.
