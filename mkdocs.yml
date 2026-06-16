@@ -8,6 +8,7 @@ repo_url: https://github.com/persunde/easyk3s
 
 theme:
   name: material
+  custom_dir: overrides
   palette:
     - scheme: default
       primary: indigo
